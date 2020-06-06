@@ -162,23 +162,23 @@ public class Lamentin implements Serializable {
 		return list_antonymes;
 	}
 
-	public String get_prononciation(String requete) {
+	public String get_prononciation() {
 		return this.prononciations;
 	}
 
-	public ArrayList<String> get_pos(String requete) {
+	public ArrayList<String> get_pos() {
 		return this.categories_morphosyntaxiques;
 	}
 
-	public HashMap<String, HashMap<String, String>> get_traductions(String requete) {
+	public HashMap<String, HashMap<String, String>> get_traductions() {
 		return this.traductions;
 	}
 
-	public ArrayList<String> get_synonymes(String requete) {
+	public ArrayList<String> get_synonymes() {
 		return this.synonymes;
 	}
 
-	public ArrayList<String> get_antonymes(String requete) {
+	public ArrayList<String> get_antonymes() {
 		return this.antonymes;
 	}
 
