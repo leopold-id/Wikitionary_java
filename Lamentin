@@ -158,6 +158,8 @@ public class Lamentin implements Serializable {
  		}
  	}
 	
+	// methode qui renvoie l'ensemble des valeurs des attributs de l'objet Lamentin. Ici nous les spécifions
+	// manuellement - mais il en faudrait une qui le fasse automatiquement
 	public String introspection() {
  		return String.format("prononciations : %s, catégories morphosyntaxique : %s, traduction : %s, synonymes : %s, antonymes : %s",
  				prononciations, categories_morphosyntaxiques, traductions, synonymes, antonymes);
