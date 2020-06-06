@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import org.apache.commons.cli.*;
 
-public class test_parse {
+public class main {
 	
 	public static Options initOptions() {
 		
