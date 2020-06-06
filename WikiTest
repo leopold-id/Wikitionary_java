@@ -38,11 +38,13 @@ public class WikiTest {
 
 			
 
-			// ne récupère que le français
+			// va spliter sur la langue
 			String[] content = p.content.split("\\{\\{langue");
 			
-			// exite les fausses pages
+			// regarde s'il a effectivement trouvé le split (enlève donc les fausses pages qui n'auront pas splitées
 			if (content.length > 1) {
+			
+				// récupère le bloc en français
 				String filtrage = content[1];
 				
 				// crée l'objet lamentin à partir de la page wiki
