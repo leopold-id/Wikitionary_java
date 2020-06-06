@@ -6,7 +6,7 @@ Scroll permet de parcourir un dump de Wikitionnary et d'extraires certaines info
 
 Lamentin est la classe de l'objet permettant d'extraire les informations d'une page. 
 
-Main est la classe qui permet d'interagir avec les données extraites. 
+Main est la classe qui permet d'interagir avec les données extraites. Deux arguments peuvent être entrés en ligne de commande.
 
 > -m mot, le mot dont on cherche les informations
 
