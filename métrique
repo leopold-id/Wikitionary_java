@@ -1,0 +1,97 @@
+package projetFinal;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+public class script_comptage {
+
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+		// @@@@@@@@@@@@@@@@ bloc qui sérialise @@@@@@@@@@@@@@@@@@@@@@@@
+
+		FileInputStream fis = new FileInputStream("extract.ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+
+		HashMap<String, Lamentin> extract = (HashMap<String, Lamentin>) ois.readObject();
+		
+		
+		System.out.println(distribution_info(extract));
+		System.out.println(distribution_synonymes(extract));
+
+		ois.close();
+		
+	
+
+	}
+
+	public static HashMap<String, Integer> distribution_info (HashMap<String, Lamentin> extract) {
+		HashMap<String, Integer> distribution_info = new HashMap<>();
+		int prononCount = 0 ;
+		int posCount = 0 ;
+		int synCount = 0 ;
+		int antCount = 0 ;
+		int tradCount = 0 ;
+			
+		for (String cle : extract.keySet() ) {
+			Lamentin lamentin = extract.get(cle) ;
+			
+			if (!lamentin.get_prononciation().isBlank()) {
+				prononCount += 1 ;
+			} 
+			
+			if (!lamentin.get_pos().isEmpty()) {
+				posCount += 1 ;
+			}
+			
+			/*if (lamentin.get_traductions() or !lamentin.get_traductions().keySet().isEmpty()) {
+				tradCount += 1 ;
+			}*/
+
+			if (!lamentin.get_synonymes().isEmpty()) {
+				synCount += 1 ;
+			}
+
+			if (!lamentin.get_antonymes().isEmpty()) {
+				antCount += 1 ;
+			}
+			
+		}
+		
+		System.out.println(tradCount);
+		distribution_info.put("prononciation",prononCount);
+		distribution_info.put("POS",posCount);
+		distribution_info.put("synonymes",synCount);
+		distribution_info.put("antonymes",antCount);
+		
+		
+		return distribution_info ;
+	}
+
+	public static HashMap<String, String> distribution_traductions(HashMap<String, Lamentin> extract) {
+		HashMap<String, String> distribution_traductions = new HashMap<>();
+
+		return distribution_traductions;
+	}
+
+	public static HashMap<Integer, Integer> distribution_synonymes(HashMap<String, Lamentin> extract) {
+		HashMap<Integer, Integer> distribution_synonymes = new HashMap<>();
+		
+		for (String cle : extract.keySet() ) {
+			int count = 0 ;
+			Lamentin lamentin = extract.get(cle) ;
+			count = lamentin.get_synonymes().size() ;
+			
+			distribution_synonymes.put(count, distribution_synonymes.getOrDefault(count, 0) + 1);
+			
+		}
+
+		return distribution_synonymes;
+	}
+
+}
