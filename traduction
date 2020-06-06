@@ -1,0 +1,65 @@
+HashMap<String, HashMap<String, String>> map_sens_map_langue_traductions = new HashMap<>();
+
+		String[] bloc = line.split("\\{\\{S\\|traductions\\}\\} ====?");
+
+		if (bloc.length > 1) {
+
+			String traductions = bloc[1].split("===?")[0];
+
+			String[] blocSens = traductions.split("\\{\\{trad-fin\\}\\}");
+
+			for (String section : blocSens) {
+				HashMap<String, String> map_langue_traductions = new HashMap<>();
+				String sensDefinition = new String();
+
+				Pattern pSens = Pattern.compile("\\{\\{trad-début\\|.+?\\}\\}");
+				Matcher mSens = pSens.matcher(section);
+
+				// il y a un sens spécifique pour la traduction
+				if (mSens.find()) {
+
+					// on récupère le sens pour le stocker comme clé dans le grand dico
+					sensDefinition = mSens.group(0).split("\\|")[1];
+
+					System.out.println(sensDefinition);
+
+					// on coupe après ce sens et on récupère ce qu'il y a après (les trad dans
+					// toutes les langues)
+					String filtre = section.split("\\{\\{trad-début\\|.+?\\}\\}")[1];
+
+					System.out.println("------");
+					System.out.println(filtre);
+					System.out.println("------");
+
+					// on sépare chaque ligne de langue différente
+					String[] listeLignes = filtre.split("\\*");
+					
+					// pour jarter les putains de lignes vides
+					if (listeLignes.length > 1) {
+
+						// on boucle sur toutes les langues
+						for (String langue : listeLignes) {
+
+							String[] nomLangueDef = langue.split(":");
+							
+							// jarter les lignes vides
+							if (nomLangueDef.length > 1) {
+
+								// System.out.println(nomLangueDef[1]);
+								// System.out.println("------");
+								// System.out.println(nomLangueDef[0]);
+								// System.out.println(nomLangueDef[1]);
+
+								map_langue_traductions.put(nomLangueDef[0], nomLangueDef[1]);
+								// System.out.println(map_langue_traductions);
+							}
+						}
+					}
+				}
+
+				map_sens_map_langue_traductions.put(sensDefinition, map_langue_traductions);
+				System.out.println(map_sens_map_langue_traductions);
+
+			}
+
+		}
