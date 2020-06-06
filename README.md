@@ -17,4 +17,4 @@ Main est la classe qui permet d'interagir avec les données extraites. Deux argu
 >  "syn" (synonymes) 
 >  "ant" (antonymes)
   
-Metrique permet de réaliser quelques mesures lexicologiques à partir des informations extraites
+Metrique permet de mesurer le volume d'informations extraites
