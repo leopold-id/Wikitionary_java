@@ -1,21 +1,20 @@
-package projet_final;
+package projetFinal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
+import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.regex.Matcher;
 
 import wiktionary_extractor.Page;
 import wiktionary_extractor.PageExtractor;
-
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 public class WikiTest {
 
@@ -23,7 +22,7 @@ public class WikiTest {
 			TransformerException, ClassNotFoundException {
 		String filename = "simplified_frwiktionary.xml.bz2";
 
-		HashMap<String, Lamentin> extract = new HashMap<>();
+		HashMap<String, Lamentin> dictionnaire = new HashMap<>();
 
 		int count = 0;
 		for (Page p : new PageExtractor(filename)) {
@@ -33,62 +32,55 @@ public class WikiTest {
 			p.toXML("test.xml");
 			// Pour accéder au contenu (wikitext) et au titre d'une page
 
-			System.out.println(p.title);
-			System.out.println("---fin titre début content----");
-			System.out.println(p.content);
-			System.out.println("----------------------------------------@@@@@@--------------------------------------------");
-			// System.out.println(p.content instanceof String) ;
-
 			// Il y a **beaucoup** de pages. Sans condition d'arrêt le
 			// programme risque de mettre beaucoup de temps à
 			// s'exécuter
-			count += 1;
-			Lamentin mot = new Lamentin(p.content);
 
-			// System.out.print("prononciations ");
-			// System.out.println(mot.prononciations);
-			// System.out.print("synonymes ");
-			// System.out.println(mot.synonymes);
-			// System.out.print("catégories morphosyntaxiques ");
-			// System.out.println(mot.categories_morposyntaxiques);
-			// System.out.print("antonymes ");
-			// System.out.println(mot.antonymes);
-
-			// System.out.println("traductions ");
-			// System.out.println(mot.traductions);
-			// System.out.println("-------------@@@@@@@@@@@@@@@@--------------");
-
-			Pattern pVide = Pattern.compile(".*?MediaWiki:.*?");
-			Matcher mVide = pVide.matcher(p.title);
-			if (!mVide.matches()) {
-				extract.put(p.title, mot);
-			}
-
-			if (count == 20) {
-				break;
-			}
 			
-		/*
+
+			// ne récupère que le français
+			String[] content = p.content.split("\\{\\{langue");
+			
+			// exite les fausses pages
+			if (content.length > 1) {
+				String filtrage = content[1];
+				
+				// crée l'objet lamentin à partir de la page wiki
+				Lamentin mot = new Lamentin(filtrage);
+
+				// l'ajoute au dictionnaire
+				dictionnaire.put(p.title, mot);
+				
+				// affichage
+				// System.out.println(p.title);
+				// System.out.println(p.content);
+
+				count += 1;
+				System.out.println(count);
+
+			}
+
+			/*count += 1;
+			if (count == 24) {
+				System.out.println(p.title);
+				System.out.println(p.content);
+				break;
+			}*/
+		}
 		// @@@@@@@@@@@@@@@@ bloc qui sérialise @@@@@@@@@@@@@@@@@@@@@@@@
-		FileOutputStream fos = new FileOutputStream("HashMap.ser");
+
+		FileOutputStream fos = new FileOutputStream("extract.ser");
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-		oos.writeObject(extract);
+		oos.writeObject(dictionnaire);
+
 		oos.close();
 
 		System.out.println(count);
 
 		// @@@@@@@@@@@@@@@@ bloc qui désérialise @@@@@@@@@@@@@@@@@@@@@@@@
-		FileInputStream fis = new FileInputStream("HashMap.ser");
-		ObjectInputStream ois = new ObjectInputStream(fis);
 
-		HashMap<String, Lamentin> dico1 = (HashMap<String, Lamentin>) ois.readObject();
-
-		ois.close();
-		System.out.println(dico1);
-		*/
-		
-			
-		}
+		// System.out.println(dico1);
 	}
+
 }
