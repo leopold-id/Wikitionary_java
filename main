@@ -43,39 +43,19 @@ public class test_parse {
 		
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
-
-		ArrayList<String> requetesPossibles = new ArrayList<>();
-		requetesPossibles.add("prononciations");
-		requetesPossibles.add("categories_morposyntaxiques");
-		requetesPossibles.add("traductions");
-		requetesPossibles.add("synonymes");
-		requetesPossibles.add("antonymes");
 		
 		// Parsing des arguments donnés en ligne de commande 
-		String mot = cmd.getOptionValue("m");
+		String mot_demande = cmd.getOptionValue("m");
 		String requete = cmd.getOptionValue("i");
 		
 		// Vérification que le mot est dans le dictionnaire 
-		if (!extract.containsKey(mot)) {
+		if (!extract.containsKey(mot_demande)) {
 			System.out.println("Le mot demandé n'est pas dans le dictionnaire");
 		} else {
-			// Vérification que la requête est une requete possible 
-			if (!requetesPossibles.contains(requete)) {
-				System.out.println("veuillez saisir une requête parmi celles suivantes : ");
-				System.out.println(requetesPossibles);
+			if (requete = "all") {
+				System.out.println(extract.get(mot_demande).introspection());
 			} else {
-				// Récupération de l'information requise
-				if (requete == "prononciations") {
-					System.out.println(extract.get(mot).prononciations);
-				} else if (requete == "categories_morposyntaxiques") {
-					System.out.println(extract.get(mot).categories_morposyntaxiques);
-				} else if (requete == "traductions") {
-					System.out.println(extract.get(mot).traductions);
-				} else if (requete == "synonymes") {
-					System.out.println(extract.get(mot).synonymes);
-				} else {
-					System.out.println(extract.get(mot).antonymes);
-				}	
+				System.out.println(extract.get(mot_demande).select(requete));
 			}
 		}
 	}	
