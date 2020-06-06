@@ -35,8 +35,11 @@ public class test_parse {
 	
 	public static void main (String[] args) throws ParseException {
 		
-		// A cet endroit là il faut récupérer la HashMap sérialisée
-		HashMap<String,Lamentin> extract = new HashMap<>();
+		// deserialisation
+		FileInputStream fis = new FileInputStream("extract.ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+
+		HashMap<String, Lamentin> extract = (HashMap<String, Lamentin>) ois.readObject();
 		
 		// Initialisation du parser et des requetes possibles 
 		Options options = initOptions();
@@ -52,7 +55,7 @@ public class test_parse {
 		if (!extract.containsKey(mot_demande)) {
 			System.out.println("Le mot demandé n'est pas dans le dictionnaire");
 		} else {
-			if (requete = "all") {
+			if (requete.equals("all")) {
 				System.out.println(extract.get(mot_demande).introspection());
 			} else {
 				System.out.println(extract.get(mot_demande).select(requete));
