@@ -1,0 +1,88 @@
+package projet_final;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+public class Lamentin {
+	
+	HashMap<String, String> prononciations;
+	ArrayList<String> categories_morposyntaxiques;
+	ArrayList<String> traductions;
+	ArrayList<String> synonymes;
+	ArrayList<String> antonymes;
+	
+	public Lamentin (String content) {
+		this.prononciations = init_prononciations(content);
+		this.categories_morposyntaxiques = init_categories_morphosyntaxiques(content);
+		this.traductions = init_traductions(content);
+		this.synonymes = init_synonymes(content);
+		this.antonymes = init_antonymes(content);
+	}
+	
+	// prononciation
+	public HashMap<String, String> init_prononciations (String content) {
+		
+		HashMap<String, String> map_prononciations = new HashMap<>();
+		
+		Pattern p = Pattern.compile("\\{\\{pron\\|.+?\\|.+?\\}\\}");
+		Matcher m = p.matcher(content);
+		
+		while (m.find()) {
+			String extract = m.group(0);
+			extract.replace("\\}", "");
+			map_prononciations.put(extract.split("\\|")[2], extract.split("\\|")[1]);
+		}
+		return map_prononciations;
+	}
+	
+	// categories morpho-syntaxiques
+	public ArrayList<String> init_categories_morphosyntaxiques(String content) {
+		ArrayList<String> list_categories = new ArrayList<>();
+		
+		return list_categories;
+	}
+	
+	// traductions 
+	public ArrayList<String> init_traductions (String content) {
+		ArrayList<String> list_traductions = new ArrayList<>();
+		return list_traductions;
+	}
+	
+	
+	// synonymes
+	public ArrayList<String> init_synonymes (String content) {
+		
+		ArrayList<String> list_synonymes = new ArrayList<>();
+		
+		Pattern p = Pattern.compile("==== \\{\\{S\\|synonymes\\}\\} ====.+? ====");
+		Matcher m = p.matcher(content);
+		
+		while (m.find()) {
+			
+			String extract = m.group(0);
+			
+			Pattern p2 = Pattern.compile("//[.+?//]");
+			Matcher m2 = p2.matcher(extract);
+			
+			while (m2.find()) {
+				list_synonymes.add(m2.group(0));
+			}
+		}
+		return list_synonymes;
+	}
+		
+	// antonymes 
+	public ArrayList<String> init_antonymes (String content) {
+		ArrayList<String> list_antonymes = new ArrayList<>();
+		
+		return list_antonymes;
+	}
+	
+	public static void main (String[] args) {
+		String content = "{{pron|ˈmɑɹtʃ|en}} {{US|nocat=1}}, {{pron|ˈmɑːtʃ|en}} {{UK|nocat=1}} # [[mars#fr|Mars]].";
+		//HashMap<String, String> result = lamentin(content);
+		//System.out.println(result);
+	}
+}
