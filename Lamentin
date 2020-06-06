@@ -10,47 +10,50 @@ import java.util.regex.Matcher;
 // ses catégories morpho-syntaxiques;
 // ses traductions;
 // ses synonymes;
-// ses antonymes;
+// ses antonymes.
 
-public class Lamentin {
-	
-	String prononciations;
-	ArrayList<String> categories_morphosyntaxiques;
-	HashMap<String, HashMap<String, ArrayList<String>>> traductions;
-	ArrayList<String> synonymes;
-	ArrayList<String> antonymes;
+public class Lamentin implements Serializable {
 
+	private String prononciations;
+	private ArrayList<String> categories_morphosyntaxiques;
+	public HashMap<String, HashMap<String, ArrayList<String>>> traductions;
+	private ArrayList<String> synonymes;
+	private ArrayList<String> antonymes;
+
+	public String toString() {
+		return String.format("prononciations : %s, catégories morphosyntaxique : %s, synonymes : %s, antonymes : %s",
+				prononciations, categories_morphosyntaxiques, synonymes, antonymes);
+	}
 
 	public Lamentin(String content) {
 		this.prononciations = init_prononciation(content);
 		this.categories_morphosyntaxiques = init_categories_morphosyntaxiques(content);
-		this.traductions = init_traductions(content);
+		// this.traductions = init_traductions(content);
 		this.synonymes = init_synonymes(content);
 		this.antonymes = init_antonymes(content);
 	}
-	
 
 	// prononciation
 	public String init_prononciation(String content) {
 		String prononciation = new String();
 
-		Pattern p = Pattern.compile("\\{\\{pron\\|.+?\\|.+?\\}\\}");
+		Pattern p = Pattern.compile("====? \\{\\{S\\|prononciation\\}\\} ====?(\\n|.*?)+?====?");
 		Matcher m = p.matcher(content);
 
 		while (m.find()) {
-			prononciation = m.group(0).split("\\|")[1];
+			Pattern p2 = Pattern.compile("\\{\\{pron\\|.+?\\|.+?\\}\\}");
+			Matcher m2 = p2.matcher(m.group(0));
+
+			while (m2.find()) {
+				prononciation = m2.group(0).split("\\|")[1];
+			}
+
 		}
 		return prononciation;
 	}
 
 	// categories morpho-syntaxiques
 	public ArrayList<String> init_categories_morphosyntaxiques(String content) {
-		ArrayList<String> accept = new ArrayList<>();
-		accept.add("nom");
-		accept.add("verbe");
-		accept.add("adverbe");
-		accept.add("adjectif");
-		accept.add("conjonction de coordination");
 
 		ArrayList<String> list_categories = new ArrayList<>();
 
@@ -58,52 +61,52 @@ public class Lamentin {
 		Matcher m = p.matcher(content);
 
 		while (m.find()) {
-			String mot = m.group(0).split("\\|")[1];
-			if (accept.contains(mot)) {
-				list_categories.add(m.group(0).split("\\|")[1]);
-			}
+			list_categories.add(m.group(0).split("\\|")[1]);
 		}
+
 		return list_categories;
 	}
 
 	// traductions
-	public HashMap<String, HashMap<String, ArrayList<String>>> init_traductions(String content) {
+public HashMap<String, HashMap<String, ArrayList<String>>> init_traductions(String content) {
 
-		HashMap<String, HashMap<String, ArrayList<String>>> map_sens_map_langue_traductions = new HashMap<>();
+	HashMap<String, HashMap<String, ArrayList<String>>> map_sens_map_langue_traductions = new HashMap<>();
 
-		Pattern p = Pattern.compile("\\{\\{trad-début\\|.*?\\|.*?\\}\\}(\\n|.*?)*\\{\\{trad-fin\\}\\}");
-		Matcher m = p.matcher(content);
+	Pattern p = Pattern.compile("\\{\\{trad-début\\|.*?\\|.*?\\}\\}(\\n|.*?)*\\{\\{trad-fin\\}\\}");
+	Matcher m = p.matcher(content);
 
-		while (m.find()) {
-			HashMap<String, ArrayList<String>> map_langue_traductions = new HashMap<>();
+	while (m.find()) {
+		HashMap<String, ArrayList<String>> map_langue_traductions = new HashMap<>();
 
-			Pattern pSens = Pattern.compile("\\{\\{trad-début\\|.+?\\}\\}");
-			Matcher mSens = pSens.matcher(m.group(0));
+		Pattern pSens = Pattern.compile("\\{\\{trad-début\\|.+?\\}\\}");
+		Matcher mSens = pSens.matcher(m.group(0));
 
-			while (mSens.find()) {
-				String sens = mSens.group(0).split("\\|")[1];
+		while (mSens.find()) {
+			String sens = mSens.group(0).split("\\|")[1];
 
-				Pattern p2 = Pattern.compile("\\{\\{trad\\+\\|.+?\\|.+?\\}\\}");
-				Matcher m2 = p2.matcher(m.group(0));
+			Pattern p2 = Pattern.compile("\\{\\{trad\\+\\|.+?\\|.+?\\}\\}");
+			Matcher m2 = p2.matcher(m.group(0));
 
-				while (m2.find()) {
-					String langue = m2.group(0).split("\\|")[1];
-					String traduction = m2.group(0).split("\\|")[2];
-					traduction = traduction.replaceAll("\\}", "");
+			while (m2.find()) {
+				String langue = m2.group(0).split("\\|")[1];
+				String traduction = m2.group(0).split("\\|")[2];
+				traduction = traduction.replaceAll("\\}", "");
 
-					if (map_langue_traductions.get(langue) == null) {
-						ArrayList<String> liste_traductions = new ArrayList<>();
+				if (map_langue_traductions.get(langue) == null) {
+					ArrayList<String> liste_traductions = new ArrayList<>();
 
-						map_langue_traductions.put(langue, liste_traductions);
-					}
-					map_langue_traductions.get(langue).add(traduction);
+					map_langue_traductions.put(langue, liste_traductions);
 				}
-				map_sens_map_langue_traductions.put(sens, map_langue_traductions);
-
+				map_langue_traductions.get(langue).add(traduction);
 			}
+			map_sens_map_langue_traductions.put(sens, map_langue_traductions);
+
 		}
-		return map_sens_map_langue_traductions;
 	}
+
+	return map_sens_map_langue_traductions;
+
+}
 
 	// synonymes
 	public ArrayList<String> init_synonymes(String content) {
@@ -139,29 +142,13 @@ public class Lamentin {
 				list_antonymes.add(m2.group(1));
 			}
 		}
+
 		return list_antonymes;
 	}
-	
-	public String select(String requete) {
-   	
-		if (requete == "prononciations") {
-			return this.lamentin.prononciations.toString();
-		} else if (requete == "categories_morposyntaxiques") {
-			return this.lamentin.categories_morposyntaxiques.toString();
-		} else if (requete == "traductions") {
-			return this.lamentin.traductions.toString();
-		} else if (requete == "synonymes") {
-			return this.lamentin.synonymes.toString();
-		} else if (requete == "antonymes") {
-			return this.lamentin.antonymes.toString();
-		} else {
-			return "requete inconnue"
-		}
-	}
-	
-	public String introspection() {
-		return String.format("prononciations : %s, catégories morphosyntaxique : %s, traduction : %s, synonymes : %s, antonymes : %s",
-				prononciations, categories_morphosyntaxiques, traductions, synonymes, antonymes);
+
+	public static void main(String[] args) {
+		String content = "{{pron|ˈmɑɹtʃ|en}} {{US|nocat=1}}, {{pron|ˈmɑːtʃ|en}} {{UK|nocat=1}} # [[mars#fr|Mars]].";
+		// HashMap<String, String> result = lamentin(content);
+		// System.out.println(result);
 	}
 }
-
