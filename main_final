@@ -8,14 +8,16 @@ import org.apache.commons.cli.*;
 public class test_parse {
 	
 	public static Options initOptions() {
-
+		
+	/*
 	    Option mot = Option.builder("h") 
 	            .longOpt("help") //
 	            .desc("help") 
 	            .hasArg(false) 
 	            .required(false) 
 	            .build();
-
+	*/
+	
 	    Option mot = Option.builder("m") 
 	            .longOpt("mot") //
 	            .desc("mot") 
@@ -48,13 +50,15 @@ public class test_parse {
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
 		
+		/*
 		if (cmd.hasOption("h") {
 			System.out.println("Ce programme permet d'obtenir des informations lexicales extraites de Wikitionnary.");
 			System.out.println("Arguments:");
 			System.out.println("-m mot");
 			System.out.println("-i information, à choisir au sein de la liste suivante: \\"pro\\" \\(prononciation\\), \\"pos\\" \\(cat. morpho-syntaxique\\), \\"trad\\" \\(traductions\\), \\"syn\\" \\(synonymes\\), \\"ant\\" \\(antonymes\\) )
 		} else {
-	
+		*/
+		
 			// Parsing des arguments donnés en ligne de commande 
 			String mot_demande = cmd.getOptionValue("m");
 			String requete = cmd.getOptionValue("i");
@@ -76,6 +80,6 @@ public class test_parse {
 				}
 			}
 			ois.close();
-		}	
+		// }	
 	}	
 }
