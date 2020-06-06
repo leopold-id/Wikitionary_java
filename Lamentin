@@ -64,7 +64,7 @@ public class Lamentin implements Serializable {
 	}
 
 	// traductions
-public HashMap<String, HashMap<String, ArrayList<String>>> init_traductions(String content) {
+	public HashMap<String, HashMap<String, ArrayList<String>>> init_traductions(String content) {
 
 	HashMap<String, HashMap<String, ArrayList<String>>> map_sens_map_langue_traductions = new HashMap<>();
 
