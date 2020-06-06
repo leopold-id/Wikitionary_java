@@ -32,16 +32,11 @@ public class Lamentin implements Serializable {
 	public String init_prononciation(String content) {
 		String prononciation = new String();
 
-		Pattern p = Pattern.compile("====? \\{\\{S\\|prononciation\\}\\} ====?(\\n|.*?)+?====?");
+		Pattern p = Pattern.compile("\\{\\{pron\\|(.+?)\\|.+?\\}\\}");
 		Matcher m = p.matcher(content);
 
-		while (m.find()) {
-			Pattern p2 = Pattern.compile("\\{\\{pron\\|.+?\\|.+?\\}\\}");
-			Matcher m2 = p2.matcher(m.group(0));
-
-			while (m2.find()) {
-				prononciation = m2.group(0).split("\\|")[1];
-			}
+		if (m.find()) {
+			prononciation = m.group(1);
 
 		}
 		return prononciation;
@@ -108,16 +103,17 @@ public class Lamentin implements Serializable {
 
 		ArrayList<String> list_synonymes = new ArrayList<>();
 
-		Pattern p = Pattern.compile("====? \\{\\{S\\|synonymes\\}\\} ====?(\\n|.*?)+?====?");
-		Matcher m = p.matcher(content);
+		String[] bloc = content.split("\\{\\{S\\|synonymes\\}\\} ====?");
+		if (bloc.length > 1) {
+			String synonymes = bloc[1].split("===")[0]; 
 
-		while (m.find()) {
-			Pattern p2 = Pattern.compile("\\* \\[\\[(.+?)\\]\\]");
-			Matcher m2 = p2.matcher(m.group(0));
+			Pattern p = Pattern.compile("\\* \\[\\[(.+?)\\]\\]");
+			Matcher m = p.matcher(synonymes);
 
-			while (m2.find()) {
-				list_synonymes.add(m2.group(1));
+			while (m.find()) {
+				list_synonymes.add(m.group(1));
 			}
+
 		}
 		return list_synonymes;
 	}
@@ -126,42 +122,41 @@ public class Lamentin implements Serializable {
 	public ArrayList<String> init_antonymes(String content) {
 		ArrayList<String> list_antonymes = new ArrayList<>();
 
-		Pattern p = Pattern.compile("====? \\{\\{S\\|antonymes\\}\\} ====?(\\n|.*?)+?====?");
-		Matcher m = p.matcher(content);
+		String[] bloc = content.split("\\{\\{S\\|antonymes\\}\\} ====?");
+		if (bloc.length > 1) {
+			String antonymes = bloc[1].split("===")[0]; 
 
-		while (m.find()) {
-			Pattern p2 = Pattern.compile("\\* \\[\\[(.+?)\\]\\]");
-			Matcher m2 = p2.matcher(m.group(0));
+			Pattern p = Pattern.compile("\\* \\[\\[(.+?)\\]\\]");
+			Matcher m = p.matcher(antonymes);
 
-			while (m2.find()) {
-				list_antonymes.add(m2.group(1));
+			while (m.find()) {
+				list_antonymes.add(m.group(1));
 			}
-		}
 
+		}
 		return list_antonymes;
 	}
 
 	public String select(String requete) {
 
- 		if (requete == "prononciations") {
- 			return this.prononciations.toString();
- 		} else if (requete == "categories_morposyntaxiques") {
- 			return this.categories_morphosyntaxiques.toString();
- 		} else if (requete == "traductions") {
- 			return this.traductions.toString();
- 		} else if (requete == "synonymes") {
- 			return this.synonymes.toString();
- 		} else if (requete == "antonymes") {
- 			return this.antonymes.toString();
- 		} else {
- 			return "requete inconnue";
- 		}
- 	}
-	
-	// methode qui renvoie l'ensemble des valeurs des attributs de l'objet Lamentin. Ici nous les spécifions
-	// manuellement - mais il en faudrait une qui le fasse automatiquement
+		if (requete == "prononciations") {
+			return this.prononciations.toString();
+		} else if (requete == "categories_morposyntaxiques") {
+			return this.categories_morphosyntaxiques.toString();
+		} else if (requete == "traductions") {
+			return this.traductions.toString();
+		} else if (requete == "synonymes") {
+			return this.synonymes.toString();
+		} else if (requete == "antonymes") {
+			return this.antonymes.toString();
+		} else {
+			return "requete inconnue";
+		}
+	}
+
 	public String introspection() {
- 		return String.format("prononciations : %s, catégories morphosyntaxique : %s, traduction : %s, synonymes : %s, antonymes : %s",
- 				prononciations, categories_morphosyntaxiques, traductions, synonymes, antonymes);
+		return String.format(
+				"prononciations : %s, catégories morphosyntaxique : %s, traduction : %s, synonymes : %s, antonymes : %s",
+				prononciations, categories_morphosyntaxiques, traductions, synonymes, antonymes);
 	}
 }
