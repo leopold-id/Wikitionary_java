@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 // ses antonymes;
 
 public class Lamentin {
-
 	
 	String prononciations;
 	ArrayList<String> categories_morphosyntaxiques;
@@ -21,7 +20,6 @@ public class Lamentin {
 	ArrayList<String> synonymes;
 	ArrayList<String> antonymes;
 
-	
 
 	public Lamentin(String content) {
 		this.prononciations = init_prononciation(content);
@@ -31,10 +29,6 @@ public class Lamentin {
 		this.antonymes = init_antonymes(content);
 	}
 	
-	public String toString() {
-		return String.format("prononciations : %s, catégories morphosyntaxique : %s, traduction : %s, synonymes : %s, antonymes : %s",
-				prononciations, categories_morphosyntaxiques, traductions, synonymes, antonymes);
-	}
 
 	// prononciation
 	public String init_prononciation(String content) {
@@ -45,7 +39,6 @@ public class Lamentin {
 
 		while (m.find()) {
 			prononciation = m.group(0).split("\\|")[1];
-
 		}
 		return prononciation;
 	}
@@ -70,7 +63,6 @@ public class Lamentin {
 				list_categories.add(m.group(0).split("\\|")[1]);
 			}
 		}
-
 		return list_categories;
 	}
 
@@ -110,9 +102,7 @@ public class Lamentin {
 
 			}
 		}
-		
 		return map_sens_map_langue_traductions;
-
 	}
 
 	// synonymes
@@ -149,8 +139,29 @@ public class Lamentin {
 				list_antonymes.add(m2.group(1));
 			}
 		}
-
 		return list_antonymes;
 	}
-
+	
+	public String select(String requete) {
+   	
+		if (requete == "prononciations") {
+			return this.lamentin.prononciations.toString();
+		} else if (requete == "categories_morposyntaxiques") {
+			return this.lamentin.categories_morposyntaxiques.toString();
+		} else if (requete == "traductions") {
+			return this.lamentin.traductions.toString();
+		} else if (requete == "synonymes") {
+			return this.lamentin.synonymes.toString();
+		} else if (requete == "antonymes") {
+			return this.lamentin.antonymes.toString();
+		} else {
+			return "requete inconnue"
+		}
+	}
+	
+	public String introspection() {
+		return String.format("prononciations : %s, catégories morphosyntaxique : %s, traduction : %s, synonymes : %s, antonymes : %s",
+				prononciations, categories_morphosyntaxiques, traductions, synonymes, antonymes);
+	}
 }
+
