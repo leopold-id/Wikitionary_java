@@ -14,16 +14,12 @@ import java.util.regex.Matcher;
 
 public class Lamentin implements Serializable {
 
-	private String prononciations;
-	private ArrayList<String> categories_morphosyntaxiques;
-	public HashMap<String, HashMap<String, ArrayList<String>>> traductions;
-	private ArrayList<String> synonymes;
-	private ArrayList<String> antonymes;
-
-	public String toString() {
-		return String.format("prononciations : %s, catégories morphosyntaxique : %s, synonymes : %s, antonymes : %s",
-				prononciations, categories_morphosyntaxiques, synonymes, antonymes);
-	}
+	String prononciations;
+	ArrayList<String> categories_morphosyntaxiques;
+	HashMap<String, HashMap<String, ArrayList<String>>> traductions;
+	ArrayList<String> synonymes;
+	ArrayList<String> antonymes;
+	
 
 	public Lamentin(String content) {
 		this.prononciations = init_prononciation(content);
@@ -146,9 +142,25 @@ public HashMap<String, HashMap<String, ArrayList<String>>> init_traductions(Stri
 		return list_antonymes;
 	}
 
-	public static void main(String[] args) {
-		String content = "{{pron|ˈmɑɹtʃ|en}} {{US|nocat=1}}, {{pron|ˈmɑːtʃ|en}} {{UK|nocat=1}} # [[mars#fr|Mars]].";
-		// HashMap<String, String> result = lamentin(content);
-		// System.out.println(result);
-	}
+
+ 	public String select(String requete) {
+
+ 		if (requete == "prononciations") {
+ 			return this.lamentin.prononciations.toString();
+ 		} else if (requete == "categories_morposyntaxiques") {
+ 			return this.lamentin.categories_morposyntaxiques.toString();
+ 		} else if (requete == "traductions") {
+ 			return this.lamentin.traductions.toString();
+ 		} else if (requete == "synonymes") {
+ 			return this.lamentin.synonymes.toString();
+ 		} else if (requete == "antonymes") {
+ 			return this.lamentin.antonymes.toString();
+ 		} else {
+ 			return "requete inconnue"
+ 		}
+ 	}
+
+ 	public String introspection() {
+ 		return String.format("prononciations : %s, catégories morphosyntaxique : %s, traduction : %s, synonymes : %s, antonymes : %s",
+ 				prononciations, categories_morphosyntaxiques, traductions, synonymes, antonymes);
 }
