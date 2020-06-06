@@ -19,7 +19,6 @@ public class Lamentin implements Serializable {
 	HashMap<String, HashMap<String, ArrayList<String>>> traductions;
 	ArrayList<String> synonymes;
 	ArrayList<String> antonymes;
-	
 
 	public Lamentin(String content) {
 		this.prononciations = init_prononciation(content);
@@ -66,43 +65,43 @@ public class Lamentin implements Serializable {
 	// traductions
 	public HashMap<String, HashMap<String, ArrayList<String>>> init_traductions(String content) {
 
-	HashMap<String, HashMap<String, ArrayList<String>>> map_sens_map_langue_traductions = new HashMap<>();
+		HashMap<String, HashMap<String, ArrayList<String>>> map_sens_map_langue_traductions = new HashMap<>();
 
-	Pattern p = Pattern.compile("\\{\\{trad-début\\|.*?\\|.*?\\}\\}(\\n|.*?)*\\{\\{trad-fin\\}\\}");
-	Matcher m = p.matcher(content);
+		Pattern p = Pattern.compile("\\{\\{trad-début\\|.*?\\|.*?\\}\\}(\\n|.*?)*\\{\\{trad-fin\\}\\}");
+		Matcher m = p.matcher(content);
 
-	while (m.find()) {
-		HashMap<String, ArrayList<String>> map_langue_traductions = new HashMap<>();
+		while (m.find()) {
+			HashMap<String, ArrayList<String>> map_langue_traductions = new HashMap<>();
 
-		Pattern pSens = Pattern.compile("\\{\\{trad-début\\|.+?\\}\\}");
-		Matcher mSens = pSens.matcher(m.group(0));
+			Pattern pSens = Pattern.compile("\\{\\{trad-début\\|.+?\\}\\}");
+			Matcher mSens = pSens.matcher(m.group(0));
 
-		while (mSens.find()) {
-			String sens = mSens.group(0).split("\\|")[1];
+			while (mSens.find()) {
+				String sens = mSens.group(0).split("\\|")[1];
 
-			Pattern p2 = Pattern.compile("\\{\\{trad\\+\\|.+?\\|.+?\\}\\}");
-			Matcher m2 = p2.matcher(m.group(0));
+				Pattern p2 = Pattern.compile("\\{\\{trad\\+\\|.+?\\|.+?\\}\\}");
+				Matcher m2 = p2.matcher(m.group(0));
 
-			while (m2.find()) {
-				String langue = m2.group(0).split("\\|")[1];
-				String traduction = m2.group(0).split("\\|")[2];
-				traduction = traduction.replaceAll("\\}", "");
+				while (m2.find()) {
+					String langue = m2.group(0).split("\\|")[1];
+					String traduction = m2.group(0).split("\\|")[2];
+					traduction = traduction.replaceAll("\\}", "");
 
-				if (map_langue_traductions.get(langue) == null) {
-					ArrayList<String> liste_traductions = new ArrayList<>();
+					if (map_langue_traductions.get(langue) == null) {
+						ArrayList<String> liste_traductions = new ArrayList<>();
 
-					map_langue_traductions.put(langue, liste_traductions);
+						map_langue_traductions.put(langue, liste_traductions);
+					}
+					map_langue_traductions.get(langue).add(traduction);
 				}
-				map_langue_traductions.get(langue).add(traduction);
+				map_sens_map_langue_traductions.put(sens, map_langue_traductions);
+
 			}
-			map_sens_map_langue_traductions.put(sens, map_langue_traductions);
-
 		}
+
+		return map_sens_map_langue_traductions;
+
 	}
-
-	return map_sens_map_langue_traductions;
-
-}
 
 	// synonymes
 	public ArrayList<String> init_synonymes(String content) {
@@ -142,25 +141,25 @@ public class Lamentin implements Serializable {
 		return list_antonymes;
 	}
 
-
- 	public String select(String requete) {
+	public String select(String requete) {
 
  		if (requete == "prononciations") {
- 			return this.lamentin.prononciations.toString();
+ 			return this.prononciations.toString();
  		} else if (requete == "categories_morposyntaxiques") {
- 			return this.lamentin.categories_morposyntaxiques.toString();
+ 			return this.categories_morphosyntaxiques.toString();
  		} else if (requete == "traductions") {
- 			return this.lamentin.traductions.toString();
+ 			return this.traductions.toString();
  		} else if (requete == "synonymes") {
- 			return this.lamentin.synonymes.toString();
+ 			return this.synonymes.toString();
  		} else if (requete == "antonymes") {
- 			return this.lamentin.antonymes.toString();
+ 			return this.antonymes.toString();
  		} else {
- 			return "requete inconnue"
+ 			return "requete inconnue";
  		}
  	}
-
- 	public String introspection() {
+	
+	public String introspection() {
  		return String.format("prononciations : %s, catégories morphosyntaxique : %s, traduction : %s, synonymes : %s, antonymes : %s",
  				prononciations, categories_morphosyntaxiques, traductions, synonymes, antonymes);
+	}
 }
