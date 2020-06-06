@@ -184,15 +184,15 @@ public class Lamentin implements Serializable {
 
 	public String select(String requete) {
 
-		if (requete == "prononciations") {
+		if (requete.equals("pro")) {
 			return this.prononciations.toString();
-		} else if (requete == "categories_morposyntaxiques") {
+		} else if (requete.equals("pos")) {
 			return this.categories_morphosyntaxiques.toString();
-		} else if (requete == "traductions") {
+		} else if (requete.equals("trad")) {
 			return this.traductions.toString();
-		} else if (requete == "synonymes") {
+		} else if (requete.equals("syn")) {
 			return this.synonymes.toString();
-		} else if (requete == "antonymes") {
+		} else if (requete.equals("ant")) {
 			return this.antonymes.toString();
 		} else {
 			return "requete inconnue";
