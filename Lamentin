@@ -44,11 +44,47 @@ public class Lamentin {
 		return list_categories;
 	}
 	
-	// traductions 
-	public ArrayList<String> init_traductions (String content) {
-		ArrayList<String> list_traductions = new ArrayList<>();
-		return list_traductions;
+	// traductions
+	public HashMap<String, HashMap<String, ArrayList<String>>> init_traductions(String content) {
+
+		HashMap<String, HashMap<String, ArrayList<String>>> map_sens_map_langue_traductions = new HashMap<>();
+
+		Pattern p = Pattern.compile("\\{\\{trad-début\\|.*?\\|.*?\\}\\}(\\n|.*?)*\\{\\{trad-fin\\}\\}");
+		Matcher m = p.matcher(content);
+
+		while (m.find()) {
+			HashMap<String, ArrayList<String>> map_langue_traductions = new HashMap<>();
+
+			Pattern pSens = Pattern.compile("\\{\\{trad-début\\|.+?\\}\\}");
+			Matcher mSens = pSens.matcher(m.group(0));
+
+			while (mSens.find()) {
+				String sens = mSens.group(0).split("\\|")[1];
+
+				Pattern p2 = Pattern.compile("\\{\\{trad\\+\\|.+?\\|.+?\\}\\}");
+				Matcher m2 = p2.matcher(m.group(0));
+
+				while (m2.find()) {
+					String langue = m2.group(0).split("\\|")[1];
+					String traduction = m2.group(0).split("\\|")[2];
+					traduction = traduction.replaceAll("\\}", "");
+
+					if (map_langue_traductions.get(langue) == null) {
+						ArrayList<String> liste_traductions = new ArrayList<>();
+
+						map_langue_traductions.put(langue, liste_traductions);
+					}
+					map_langue_traductions.get(langue).add(traduction);
+				}
+				map_sens_map_langue_traductions.put(sens, map_langue_traductions);
+
+			}
+		}
+		
+		return map_sens_map_langue_traductions;
+
 	}
+
 	
 	
 	// synonymes
