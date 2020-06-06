@@ -69,20 +69,16 @@ public class WikiTest {
 				break;
 			}*/
 		}
-		// @@@@@@@@@@@@@@@@ bloc qui sérialise @@@@@@@@@@@@@@@@@@@@@@@@
+		
+		// serialisation
 
 		FileOutputStream fos = new FileOutputStream("extract.ser");
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 
 		oos.writeObject(dictionnaire);
-
 		oos.close();
 
 		System.out.println(count);
-
-		// @@@@@@@@@@@@@@@@ bloc qui désérialise @@@@@@@@@@@@@@@@@@@@@@@@
-
-		// System.out.println(dico1);
 	}
 
 }
