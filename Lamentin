@@ -16,7 +16,7 @@ public class Lamentin implements Serializable {
 
 	String prononciations;
 	ArrayList<String> categories_morphosyntaxiques;
-	HashMap<String, HashMap<String, ArrayList<String>>> traductions;
+	HashMap<String, HashMap<String, String>> traductions;
 	ArrayList<String> synonymes;
 	ArrayList<String> antonymes;
 
@@ -58,40 +58,65 @@ public class Lamentin implements Serializable {
 	}
 
 	// traductions
-	public HashMap<String, HashMap<String, ArrayList<String>>> init_traductions(String content) {
+	public HashMap<String, HashMap<String, String>> init_traductions(String content) {
 
-		HashMap<String, HashMap<String, ArrayList<String>>> map_sens_map_langue_traductions = new HashMap<>();
+		HashMap<String, HashMap<String, String>> map_sens_map_langue_traductions = new HashMap<>();
 
-		Pattern p = Pattern.compile("\\{\\{trad-début\\|.*?\\|.*?\\}\\}(\\n|.*?)*\\{\\{trad-fin\\}\\}");
-		Matcher m = p.matcher(content);
+		String[] bloc = content.split("\\{\\{S\\|traductions\\}\\} ====?");
 
-		while (m.find()) {
-			HashMap<String, ArrayList<String>> map_langue_traductions = new HashMap<>();
+		if (bloc.length > 1) {
 
-			Pattern pSens = Pattern.compile("\\{\\{trad-début\\|.+?\\}\\}");
-			Matcher mSens = pSens.matcher(m.group(0));
+			String traductions = bloc[1].split("===?")[0];
 
-			while (mSens.find()) {
-				String sens = mSens.group(0).split("\\|")[1];
+			String[] blocSens = traductions.split("\\{\\{trad-fin\\}\\}");
 
-				Pattern p2 = Pattern.compile("\\{\\{trad\\+\\|.+?\\|.+?\\}\\}");
-				Matcher m2 = p2.matcher(m.group(0));
+			for (String section : blocSens) {
+				HashMap<String, String> map_langue_traductions = new HashMap<>();
+				String sensDefinition = new String();
 
-				while (m2.find()) {
-					String langue = m2.group(0).split("\\|")[1];
-					String traduction = m2.group(0).split("\\|")[2];
-					traduction = traduction.replaceAll("\\}", "");
+				Pattern pSens = Pattern.compile("\\{\\{trad-début\\|.+?\\}\\}");
+				Matcher mSens = pSens.matcher(section);
 
-					if (map_langue_traductions.get(langue) == null) {
-						ArrayList<String> liste_traductions = new ArrayList<>();
+				// il y a un sens spécifique pour la traduction
+				if (mSens.find()) {
 
-						map_langue_traductions.put(langue, liste_traductions);
+					// on récupère le sens pour le stocker comme clé dans le grand dico
+					sensDefinition = mSens.group(0).split("\\|")[1];
+
+					// on coupe après ce sens et on récupère ce qu'il y a après (les trad dans
+					// toutes les langues)
+					String filtre = section.split("\\{\\{trad-début\\|.+?\\}\\}")[1];
+
+					// on sépare chaque ligne de langue différente
+					String[] listeLignes = filtre.split("\\*");
+
+					// pour jarter les putains de lignes vides
+					if (listeLignes.length > 1) {
+
+						// on boucle sur toutes les langues
+						for (String langue : listeLignes) {
+
+							String[] nomLangueDef = langue.split(":");
+
+							// jarter les lignes vides
+							if (nomLangueDef.length > 1) {
+
+								// System.out.println(nomLangueDef[1]);
+								// System.out.println("------");
+								// System.out.println(nomLangueDef[0]);
+								// System.out.println(nomLangueDef[1]);
+
+								map_langue_traductions.put(nomLangueDef[0], nomLangueDef[1]);
+
+							}
+						}
 					}
-					map_langue_traductions.get(langue).add(traduction);
 				}
-				map_sens_map_langue_traductions.put(sens, map_langue_traductions);
+
+				map_sens_map_langue_traductions.put(sensDefinition, map_langue_traductions);
 
 			}
+
 		}
 
 		return map_sens_map_langue_traductions;
@@ -105,7 +130,7 @@ public class Lamentin implements Serializable {
 
 		String[] bloc = content.split("\\{\\{S\\|synonymes\\}\\} ====?");
 		if (bloc.length > 1) {
-			String synonymes = bloc[1].split("===")[0]; 
+			String synonymes = bloc[1].split("===")[0];
 
 			Pattern p = Pattern.compile("\\* \\[\\[(.+?)\\]\\]");
 			Matcher m = p.matcher(synonymes);
@@ -124,7 +149,7 @@ public class Lamentin implements Serializable {
 
 		String[] bloc = content.split("\\{\\{S\\|antonymes\\}\\} ====?");
 		if (bloc.length > 1) {
-			String antonymes = bloc[1].split("===")[0]; 
+			String antonymes = bloc[1].split("===")[0];
 
 			Pattern p = Pattern.compile("\\* \\[\\[(.+?)\\]\\]");
 			Matcher m = p.matcher(antonymes);
@@ -135,6 +160,26 @@ public class Lamentin implements Serializable {
 
 		}
 		return list_antonymes;
+	}
+
+	public String get_prononciation(String requete) {
+		return this.prononciations;
+	}
+
+	public ArrayList<String> get_pos(String requete) {
+		return this.categories_morphosyntaxiques;
+	}
+
+	public HashMap<String, HashMap<String, String>> get_traductions(String requete) {
+		return this.traductions;
+	}
+
+	public ArrayList<String> get_synonymes(String requete) {
+		return this.synonymes;
+	}
+
+	public ArrayList<String> get_antonymes(String requete) {
+		return this.antonymes;
 	}
 
 	public String select(String requete) {
